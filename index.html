@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bunbōgu – Minimal Study Tools</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .block:focus { outline: none; border-color: #6366f1; }
+    .block:empty:before {
+      content: attr(data-placeholder);
+      color: #a0aec0;
+      pointer-events: none;
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="flex min-h-screen">
+    <aside class="w-64 bg-white border-r border-gray-200 p-6 hidden md:block">
+      <h2 class="text-xl font-bold mb-6">Bunbōgu</h2>
+      <nav>
+        <ul class="space-y-4">
+          <li><a href="#" class="text-gray-700 hover:text-blue-600">Dashboard</a></li>
+          <li><a href="#" class="text-gray-700 hover:text-blue-600">Weekly Planner</a></li>
+          <li><a href="#" class="text-gray-700 hover:text-blue-600">To-Do List</a></li>
+          <li><a href="#" class="text-gray-700 hover:text-blue-600">Study Notes</a></li>
+        </ul>
+      </nav>
+    </aside>
+    <main class="flex-1 p-8">
+      <h1 class="text-4xl font-bold mb-4">✨ Bunbōgu</h1>
+      <p class="text-lg mb-8 text-gray-600">A faceless, beige, minimal digital planner — now with study tools.</p>
+      <div id="blocks" class="space-y-4 mb-8"></div>
+      <button onclick="addBlock()" class="text-gray-500 hover:text-blue-600 text-sm mb-8">+ Add Block</button>
+      <div class="bg-white rounded-2xl shadow p-6 mb-6">
+        <h2 class="text-2xl font-semibold mb-4">✏️ Freebie Version Includes:</h2>
+        <ul class="list-disc list-inside space-y-2">
+          <li>Simple Dashboard</li>
+          <li>Weekly Planner</li>
+          <li>To-Do List</li>
+          <li>
+            📚 <strong>Study Notes Section</strong>
+            <ul class="list-disc list-inside ml-5 text-sm text-gray-700">
+              <li>Space to manually add subjects</li>
+              <li>Basic note-taking layout (toggle or table)</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <button onclick="togglePaid()" class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700">See Paid Version</button>
+      <div id="paidPlan" class="bg-yellow-50 rounded-2xl shadow p-6 mt-6 hidden">
+        <h2 class="text-2xl font-semibold mb-4">🌟 Full (Paid) Version Includes:</h2>
+        <ul class="list-disc list-inside space-y-2">
+          <li>Everything in Freebie</li>
+          <li>Calendar Sync</li>
+          <li>Habit Tracker</li>
+          <li>Mood Tracker</li>
+          <li>Finance Tracker</li>
+          <li>Custom Quotes and Affirmations</li>
+        </ul>
+        <button class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500">Upgrade Now</button>
+      </div>
+      <div class="mt-10">
+        <label for="quote" class="block text-sm font-medium text-gray-700 mb-2">Want a custom quote on your dashboard?</label>
+        <input type="text" id="quote" class="w-full p-2 border border-gray-300 rounded mb-4" placeholder="Enter your quote..." />
+        <button onclick="saveQuote()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Save Quote</button>
+        <p id="quoteSaved" class="text-green-600 mt-2 hidden">Quote saved!</p>
+      </div>
+    </main>
+  </div>
+  <script>
+    function addBlock(content = '') {
+      const blocks = document.getElementById('blocks');
+      const div = document.createElement('div');
+      div.className = 'block bg-white rounded-lg border border-gray-200 p-4';
+      div.contentEditable = true;
+      div.setAttribute('data-placeholder', "Type '/' for commands...");
+      div.innerHTML = content;
+      blocks.appendChild(div);
+      div.focus();
+      div.addEventListener('input', saveBlocks);
+    }
+    function saveBlocks() {
+      const blocks = [...document.querySelectorAll('.block')].map(b => b.innerHTML);
+      localStorage.setItem('bunbouguBlocks', JSON.stringify(blocks));
+    }
+    function loadBlocks() {
+      const saved = JSON.parse(localStorage.getItem('bunbouguBlocks') || '[]');
+      if (saved.length === 0) addBlock();
+      else saved.forEach(content => addBlock(content));
+    }
+    function togglePaid() {
+      document.getElementById('paidPlan').classList.toggle('hidden');
+    }
+    function saveQuote() {
+      const quote = document.getElementById('quote').value.trim();
+      if (quote) {
+        localStorage.setItem('bunbouguQuote', quote);
+        document.getElementById('quoteSaved').classList.remove('hidden');
+      }
+    }
+    window.addEventListener('load', () => {
+      loadBlocks();
+      const quote = localStorage.getItem('bunbouguQuote');
+      if (quote) {
+        document.getElementById('quote').value = quote;
+        document.getElementById('quoteSaved').classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
