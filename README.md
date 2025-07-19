@@ -1,6 +1,6 @@
 # ✨ Bunbōgu – Minimal Digital Planner
 
-A faceless, beige, Notion-style digital planner made for calm productivity.  
+A  Notion-style digital planner made for calm productivity.  
 This is the free version — includes:
 
 - Dashboard  
